@@ -1,7 +1,20 @@
+import 'dart:io';
+
+import 'package:eventos/dao/eventDao.dart';
 import 'package:eventos/model/eventos.dart';
 import 'package:flutter/material.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
-void main() {
+import 'add_event_page.dart';
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  if (Platform.isWindows || Platform.isLinux) {
+    sqfliteFfiInit();
+  }
+  databaseFactory = databaseFactoryFfi;
+
+  debugPrint((await findall()).toString());
   runApp(EventManagerApp());
 }
 
@@ -147,7 +160,7 @@ class EventPage extends StatelessWidget {
     // Adicione mais eventos aqui
   ];
 
-  @override 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -215,58 +228,6 @@ class EventPage extends StatelessWidget {
             MaterialPageRoute(builder: (context) => AddEventPage()),
           );
         },
-      ),
-    );
-  }
-}
-
-class AddEventPage extends StatelessWidget {
-  final TextEditingController _eventNameController = TextEditingController();
-  final TextEditingController _eventDateController = TextEditingController();
-  final TextEditingController _eventTimeController = TextEditingController();
-  final TextEditingController _eventLocationController =
-      TextEditingController();
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Adicionar Evento'),
-        backgroundColor: Colors.black,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            TextField(
-              controller: _eventNameController,
-              decoration: const InputDecoration(labelText: 'Nome do Evento'),
-            ),
-            TextField(
-              controller: _eventDateController,
-              decoration: const InputDecoration(labelText: 'Data'),
-            ),
-            TextField(
-              controller: _eventTimeController,
-              decoration: const InputDecoration(labelText: 'Horário'),
-            ),
-            TextField(
-              controller: _eventLocationController,
-              decoration: const InputDecoration(labelText: 'Local'),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                // Aqui você pode adicionar a lógica para salvar o evento.
-                // Por exemplo, você pode adicionar o evento à lista de eventos e retornar à página anterior.
-
-                Navigator.pop(context);
-              },
-              child: const Text('Salvar Evento'),
-            ),
-          ],
-        ),
       ),
     );
   }
