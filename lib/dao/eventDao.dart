@@ -1,5 +1,7 @@
 import 'package:eventos/db/db.dart';
 import 'package:eventos/model/eventos.dart';
+// ignore: unused_import
+import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 
 Future<int> insertEvent(Event event) async {
@@ -13,3 +15,9 @@ Future<List<Map<String, dynamic>>> findall() async {
   List<Map<String, dynamic>> dados = await db.query('eventos');
   return dados;
 }
+
+// Future<int> deleteById(int id) async {
+//   debugPrint("Deletando o ID: $id");
+//   Database db = await getDatabase();
+//   return db.delete('eventos', where: "id = ?", whereArgs: [id]);
+// }

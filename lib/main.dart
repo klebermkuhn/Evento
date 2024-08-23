@@ -50,7 +50,7 @@ class LoginPage extends StatelessWidget {
       ),
       backgroundColor: Color.fromARGB(255, 209, 209, 209),
       body: Padding(
-        padding: const EdgeInsets.all(250.0),
+        padding: const EdgeInsets.all(20.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
@@ -107,7 +107,7 @@ class SignUpPage extends StatelessWidget {
       ),
       backgroundColor: Color.fromARGB(255, 209, 209, 209),
       body: Padding(
-        padding: const EdgeInsets.all(250.0),
+        padding: const EdgeInsets.all(20.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
@@ -153,9 +153,17 @@ class SignUpPage extends StatelessWidget {
 
 class EventPage extends StatelessWidget {
   final List<Map<String, dynamic>> events = [
-    Event(nome: 'kleber', dataHora: DateTime.now(), local: 'casa do lerner')
+    Event(
+            nome: 'kleber',
+            dataHora: DateTime.now(),
+            local: 'casa do lerner',
+            convidados: 'marcos')
         .toMap(),
-    Event(nome: 'kauan', dataHora: DateTime.now(), local: 'casa do kleber')
+    Event(
+            nome: 'kauan',
+            dataHora: DateTime.now(),
+            local: 'casa do kleber',
+            convidados: 'marcsos')
         .toMap(),
     // Adicione mais eventos aqui
   ];
@@ -204,6 +212,7 @@ class EventPage extends StatelessWidget {
                   Text('Data: ${event['data'] ?? ''}'),
                   const SizedBox(height: 8.0), // Espaçamento opcional
                   Text('Local: ${event['local'] ?? ''}'),
+                  Text('convidados: ${event['convidados:'] ?? ''}'),
                   Align(
                     alignment: Alignment.bottomRight,
                     child: IconButton(
