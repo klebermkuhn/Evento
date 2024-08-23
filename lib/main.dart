@@ -38,9 +38,16 @@ class EventManagerApp extends StatelessWidget {
   }
 }
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
+  @override
+  _LoginPageState createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  bool _isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -48,45 +55,77 @@ class LoginPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Login'),
       ),
-      backgroundColor: Color.fromARGB(255, 209, 209, 209),
+      backgroundColor: Color.fromARGB(255, 231, 219, 253),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            TextField(
-              controller: _usernameController,
-              decoration: const InputDecoration(labelText: 'Nome'),
-            ),
-            TextField(
-              controller: _passwordController,
-              decoration: const InputDecoration(labelText: 'Senha'),
-              obscureText: true,
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => EventPage()),
-                );
-              },
-              child: const Text('Entrar'),
-            ),
-            const SizedBox(height: 20),
-            TextButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => SignUpPage()),
-                );
-              },
-              child: const Text(
-                'Criar conta',
-                style: TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              TextFormField(
+                controller: _usernameController,
+                decoration: const InputDecoration(labelText: 'Nome'),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Informe o nome';
+                  }
+                  return null;
+                },
               ),
-            ),
-          ],
+              TextFormField(
+                controller: _passwordController,
+                decoration: const InputDecoration(labelText: 'Senha'),
+                obscureText: true,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Informe a senha';
+                  } else if (value.length < 6) {
+                    return 'Senha deve ter pelo menos 6 caracteres';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: _isLoading
+                    ? null
+                    : () async {
+                        if (_formKey.currentState?.validate() ?? false) {
+                          setState(() {
+                            _isLoading = true;
+                          });
+                          // Simula um delay para o carregamento
+                          await Future.delayed(Duration(seconds: 2));
+                          setState(() {
+                            _isLoading = false;
+                          });
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => EventPage()),
+                          );
+                        }
+                      },
+                child: _isLoading
+                    ? const CircularProgressIndicator()
+                    : const Text('Entrar'),
+              ),
+              const SizedBox(height: 20),
+              TextButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => SignUpPage()),
+                  );
+                },
+                child: const Text(
+                  'Criar conta',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -105,7 +144,7 @@ class SignUpPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Criar Conta'),
       ),
-      backgroundColor: Color.fromARGB(255, 209, 209, 209),
+      backgroundColor: Color.fromARGB(255, 214, 197, 247),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
