@@ -15,3 +15,11 @@ Future<List<Map<String, dynamic>>> findall() async {
   List<Map<String, dynamic>> dados = await db.query('eventos');
   return dados;
 }
+
+
+
+// Future<int> deleteById(int id) async {
+//   debugPrint("Deletando o ID: $id");
+//   Database db = await getDatabase();
+//   return db.delete('eventos', where: "id = ?", whereArgs: [id]);
+// }

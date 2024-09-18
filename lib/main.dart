@@ -14,12 +14,10 @@ Future<void> main() async {
     sqfliteFfiInit();
   }
   databaseFactory = databaseFactoryFfi;
-
+  debugPrint("Banco: ");
   debugPrint((await findall()).toString());
   runApp(const EventManagerApp());
 }
-
-findall() {}
 
 class EventManagerApp extends StatelessWidget {
   const EventManagerApp({super.key});
@@ -43,12 +41,16 @@ class EventManagerApp extends StatelessWidget {
   }
 }
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
+  @override
+  _LoginPageState createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-
-  LoginPage({super.key});
-
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  bool _isLoading = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -119,7 +121,7 @@ class SignUpPage extends StatelessWidget {
       ),
       backgroundColor: const Color.fromARGB(255, 209, 209, 209),
       body: Padding(
-        padding: const EdgeInsets.all(250.0),
+        padding: const EdgeInsets.all(20.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
@@ -164,15 +166,13 @@ class SignUpPage extends StatelessWidget {
 }
 
 // ignore: use_key_in_widget_constructors
-class EventPage extends StatelessWidget {
-  final List<Map<String, dynamic>> events = [
-    Event(nome: 'kleber', dataHora: DateTime.now(), local: 'casa do lerner')
-        .toMap(),
-    Event(nome: 'kauan', dataHora: DateTime.now(), local: 'casa do kleber')
-        .toMap(),
-    // Adicione mais eventos aqui
-  ];
+class EventPage extends StatefulWidget {
+  @override
+  State<EventPage> createState() => _EventPageState();
+}
 
+class _EventPageState extends State<EventPage> {
+//  final List<Map<String, dynamic>> events = [
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -191,45 +191,66 @@ class EventPage extends StatelessWidget {
           ),
         ],
       ),
-      body: GridView.builder(
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2, // Dois ListTile por linha
-          crossAxisSpacing: 10.0, // Espaço horizontal entre os itens
-          mainAxisSpacing: 10.0, // Espaço vertical entre os itens
-        ),
-        padding: const EdgeInsets.all(10.0),
-        itemCount: events.length,
-        itemBuilder: (context, index) {
-          final event = events[index];
-          return Card(
-            child: Padding(
-              padding: const EdgeInsets.all(
-                  8.0), // Adicione algum padding se desejar
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    event['nome'] ?? '',
-                    style: Theme.of(context).textTheme.headlineMedium,
-                  ),
-                  const SizedBox(height: 8.0), // Espaçamento opcional
-                  Text('Horário: ${event['horario'] ?? ''}'),
-                  Text('Data: ${event['data'] ?? ''}'),
-                  const SizedBox(height: 8.0), // Espaçamento opcional
-                  Text('Local: ${event['local'] ?? ''}'),
-                  Align(
-                    alignment: Alignment.bottomRight,
-                    child: IconButton(
-                      icon: const Icon(Icons.delete),
-                      onPressed: () {
-                        // Implementar funcionalidade de exclusão aqui, se necessário
-                      },
+      body: FutureBuilder(
+        future: findall(),
+        builder: (context, snapshot) {
+          switch (snapshot.connectionState) {
+            case ConnectionState.none:
+              return const Center(
+                child: Text('Houve um erro de conexão com o banco de dados'),
+              );
+            case ConnectionState.waiting:
+            // fez a requisição e estou esperando a resposta
+            case ConnectionState.active:
+              // active mostra que a conexão com o banco foi bem sucedida
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+
+            case ConnectionState.done:
+              List<Map> events = snapshot.data as List<Map>;
+              return GridView.builder(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2, // Dois ListTile por linha
+                  crossAxisSpacing: 10.0, // Espaço horizontal entre os itens
+                  mainAxisSpacing: 10.0, // Espaço vertical entre os itens
+                ),
+                padding: const EdgeInsets.all(10.0),
+                itemCount: events.length,
+                itemBuilder: (context, index) {
+                  final event = events[index];
+                  return Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(
+                          8.0), // Adicione algum padding se desejar
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            event['nome'] ?? '',
+                            style: Theme.of(context).textTheme.headlineMedium,
+                          ),
+                          const SizedBox(height: 8.0), // Espaçamento opcional
+                          Text('Data: ${event['datahora'] ?? ''}'),
+                          const SizedBox(height: 8.0), // Espaçamento opcional
+                          Text('Local: ${event['local'] ?? ''}'),
+                          Text('convidados: ${event['convidados:'] ?? ''}'),
+                          Align(
+                            alignment: Alignment.bottomRight,
+                            child: IconButton(
+                              icon: const Icon(Icons.delete),
+                              onPressed: () {
+                                // Implementar funcionalidade de exclusão aqui, se necessário
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
-              ),
-            ),
-          );
+                  );
+                },
+              );
+          }
         },
       ),
       floatingActionButton: FloatingActionButton(
@@ -239,7 +260,10 @@ class EventPage extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => AddEventPage()),
-          );
+          ).then((value) {
+            setState(() {});
+          });
+          ;
         },
       ),
     );

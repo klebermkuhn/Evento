@@ -1,10 +1,11 @@
 import 'package:eventos/dao/eventDao.dart';
 import 'package:eventos/model/eventos.dart';
 import 'package:flutter/material.dart';
-
 import 'package:intl/intl.dart'; // Para formatar a data e o horário
 
 class AddEventPage extends StatefulWidget {
+  const AddEventPage({super.key});
+
   @override
   State<AddEventPage> createState() => _AddEventPageState();
 }
@@ -13,6 +14,7 @@ class _AddEventPageState extends State<AddEventPage> {
   final TextEditingController _eventNameController = TextEditingController();
   final TextEditingController _eventLocationController =
       TextEditingController();
+  final TextEditingController _convidados = TextEditingController();
 
   DateTime? _selectedDate;
   TimeOfDay? _selectedTime;
@@ -108,6 +110,10 @@ class _AddEventPageState extends State<AddEventPage> {
               controller: _eventLocationController,
               decoration: const InputDecoration(labelText: 'Local'),
             ),
+            TextField(
+              controller: _convidados,
+              decoration: const InputDecoration(labelText: 'convidados:'),
+            ),
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
@@ -119,7 +125,8 @@ class _AddEventPageState extends State<AddEventPage> {
                   insertEvent(Event(
                       nome: _eventNameController.text,
                       dataHora: dateTime,
-                      local: _eventLocationController.text));
+                      local: _eventLocationController.text,
+                      convidados: _convidados.text));
                   Navigator.pop(context);
                 } else {
                   // Exibe uma mensagem de erro se a data ou horário não foram selecionados
