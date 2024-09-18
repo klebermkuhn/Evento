@@ -1,5 +1,6 @@
 import 'dart:io';
 
+// ignore: unused_import
 import 'package:eventos/dao/eventDao.dart';
 import 'package:eventos/model/eventos.dart';
 import 'package:flutter/material.dart';
@@ -15,17 +16,21 @@ Future<void> main() async {
   databaseFactory = databaseFactoryFfi;
 
   debugPrint((await findall()).toString());
-  runApp(EventManagerApp());
+  runApp(const EventManagerApp());
 }
 
+findall() {}
+
 class EventManagerApp extends StatelessWidget {
+  const EventManagerApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Event Manager',
       theme: ThemeData(
-        primaryColor: Color.fromARGB(255, 0, 0, 0),
-        appBarTheme: AppBarTheme(
+        primaryColor: const Color.fromARGB(255, 0, 0, 0),
+        appBarTheme: const AppBarTheme(
           backgroundColor: Colors.black,
           foregroundColor: Colors.white,
         ),
@@ -42,17 +47,20 @@ class LoginPage extends StatelessWidget {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
+  LoginPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Login'),
       ),
-      backgroundColor: Color.fromARGB(255, 209, 209, 209),
+      backgroundColor: const Color.fromARGB(255, 209, 209, 209),
       body: Padding(
-        padding: const EdgeInsets.all(250.0),
+        padding: const EdgeInsets.symmetric(horizontal: 50.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment:
+              MainAxisAlignment.end, // Alinha o conteúdo na parte inferior
           children: <Widget>[
             TextField(
               controller: _usernameController,
@@ -63,7 +71,7 @@ class LoginPage extends StatelessWidget {
               decoration: const InputDecoration(labelText: 'Senha'),
               obscureText: true,
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 30), // Espaço adicional entre campos e botão
             ElevatedButton(
               onPressed: () {
                 Navigator.pushReplacement(
@@ -73,7 +81,7 @@ class LoginPage extends StatelessWidget {
               },
               child: const Text('Entrar'),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 40), // Espaço entre o botão e o texto
             TextButton(
               onPressed: () {
                 Navigator.push(
@@ -86,6 +94,8 @@ class LoginPage extends StatelessWidget {
                 style: TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
               ),
             ),
+            const SizedBox(
+                height: 60), // Espaço opcional na parte inferior da tela
           ],
         ),
       ),
@@ -99,13 +109,15 @@ class SignUpPage extends StatelessWidget {
   final TextEditingController _confirmPasswordController =
       TextEditingController();
 
+  SignUpPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Criar Conta'),
       ),
-      backgroundColor: Color.fromARGB(255, 209, 209, 209),
+      backgroundColor: const Color.fromARGB(255, 209, 209, 209),
       body: Padding(
         padding: const EdgeInsets.all(250.0),
         child: Column(
@@ -136,8 +148,8 @@ class SignUpPage extends StatelessWidget {
                 } else {
                   // Exibe um erro se as senhas não coincidirem.
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: const Text('Senhas não coincidem'),
+                    const SnackBar(
+                      content: Text('Senhas não coincidem'),
                     ),
                   );
                 }
@@ -151,6 +163,7 @@ class SignUpPage extends StatelessWidget {
   }
 }
 
+// ignore: use_key_in_widget_constructors
 class EventPage extends StatelessWidget {
   final List<Map<String, dynamic>> events = [
     Event(nome: 'kleber', dataHora: DateTime.now(), local: 'casa do lerner')
@@ -164,7 +177,7 @@ class EventPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 0, 0, 0),
+        backgroundColor: const Color.fromARGB(255, 0, 0, 0),
         title: const Text('Event Manager'),
         actions: <Widget>[
           IconButton(
@@ -179,12 +192,12 @@ class EventPage extends StatelessWidget {
         ],
       ),
       body: GridView.builder(
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2, // Dois ListTile por linha
           crossAxisSpacing: 10.0, // Espaço horizontal entre os itens
           mainAxisSpacing: 10.0, // Espaço vertical entre os itens
         ),
-        padding: EdgeInsets.all(10.0),
+        padding: const EdgeInsets.all(10.0),
         itemCount: events.length,
         itemBuilder: (context, index) {
           final event = events[index];
@@ -197,7 +210,7 @@ class EventPage extends StatelessWidget {
                 children: [
                   Text(
                     event['nome'] ?? '',
-                    style: Theme.of(context).textTheme.headline6,
+                    style: Theme.of(context).textTheme.headlineMedium,
                   ),
                   const SizedBox(height: 8.0), // Espaçamento opcional
                   Text('Horário: ${event['horario'] ?? ''}'),
@@ -207,7 +220,7 @@ class EventPage extends StatelessWidget {
                   Align(
                     alignment: Alignment.bottomRight,
                     child: IconButton(
-                      icon: Icon(Icons.delete),
+                      icon: const Icon(Icons.delete),
                       onPressed: () {
                         // Implementar funcionalidade de exclusão aqui, se necessário
                       },
@@ -221,7 +234,7 @@ class EventPage extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: const Color.fromARGB(255, 255, 255, 255),
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
         onPressed: () {
           Navigator.push(
             context,

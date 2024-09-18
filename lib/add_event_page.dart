@@ -1,7 +1,7 @@
 import 'package:eventos/dao/eventDao.dart';
 import 'package:eventos/model/eventos.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart';
+
 import 'package:intl/intl.dart'; // Para formatar a data e o horário
 
 class AddEventPage extends StatefulWidget {
