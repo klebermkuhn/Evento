@@ -1,8 +1,6 @@
 import 'dart:io';
 
-// ignore: unused_import
 import 'package:eventos/dao/eventDao.dart';
-import 'package:eventos/model/eventos.dart';
 import 'package:flutter/material.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
@@ -223,28 +221,24 @@ class _EventPageState extends State<EventPage> {
                     child: Padding(
                       padding: const EdgeInsets.all(
                           8.0), // Adicione algum padding se desejar
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            event['nome'] ?? '',
-                            style: Theme.of(context).textTheme.headlineMedium,
-                          ),
-                          const SizedBox(height: 8.0), // Espaçamento opcional
-                          Text('Data: ${event['datahora'] ?? ''}'),
-                          const SizedBox(height: 8.0), // Espaçamento opcional
-                          Text('Local: ${event['local'] ?? ''}'),
-                          Text('convidados: ${event['convidados:'] ?? ''}'),
-                          Align(
-                            alignment: Alignment.bottomRight,
-                            child: IconButton(
-                              icon: const Icon(Icons.delete),
-                              onPressed: () {
-                                // Implementar funcionalidade de exclusão aqui, se necessário
-                              },
-                            ),
-                          ),
-                        ],
+                      child: ListTile(
+                        title: Text(
+                          event['nome'] ?? '',
+                          style: Theme.of(context).textTheme.headlineMedium,
+                        ),
+                        subtitle: Column(
+                          children: [
+                            const SizedBox(height: 8.0), // Espaçamento opcional
+                            Text('Data: ${event['datahora'] ?? ''}'),
+                            const SizedBox(height: 8.0), // Espaçamento opcional
+                            Text('Local: ${event['local'] ?? ''}'),
+                            Text('convidados: ${event['convidados'] ?? ''}'),
+                          ],
+                        ),
+                        trailing: IconButton(
+                          icon: const Icon(Icons.delete),
+                          onPressed: () {},
+                        ),
                       ),
                     ),
                   );
