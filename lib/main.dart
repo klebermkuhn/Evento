@@ -35,6 +35,7 @@ class EventManagerApp extends StatelessWidget {
         ),
       ),
       home: LoginPage(),
+      debugShowCheckedModeBanner: false,
     );
   }
 }
@@ -53,9 +54,9 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Login'),
+        title: const Text('NEWEVENT'),
       ),
-      backgroundColor: const Color.fromARGB(255, 209, 209, 209),
+      backgroundColor: const Color.fromARGB(255, 255, 255, 255),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 50.0),
         child: Column(
@@ -91,7 +92,7 @@ class _LoginPageState extends State<LoginPage> {
               },
               child: const Text(
                 'Criar conta',
-                style: TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
+                style: TextStyle(color: Color.fromARGB(255, 71, 10, 10)),
               ),
             ),
             const SizedBox(
@@ -115,9 +116,9 @@ class SignUpPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Criar Conta'),
+        title: const Text('NEWEVENT'),
       ),
-      backgroundColor: const Color.fromARGB(255, 209, 209, 209),
+      backgroundColor: const Color.fromARGB(255, 255, 255, 255),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
@@ -176,7 +177,7 @@ class _EventPageState extends State<EventPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 0, 0, 0),
-        title: const Text('Event Manager'),
+        title: const Text('NEWEVENT'),
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.logout),
@@ -219,8 +220,7 @@ class _EventPageState extends State<EventPage> {
                   final event = events[index];
                   return Card(
                     child: Padding(
-                      padding: const EdgeInsets.all(
-                          8.0), // Adicione algum padding se desejar
+                      padding: const EdgeInsets.all(5.0),
                       child: ListTile(
                         title: Text(
                           event['nome'] ?? '',
@@ -228,16 +228,22 @@ class _EventPageState extends State<EventPage> {
                         ),
                         subtitle: Column(
                           children: [
-                            const SizedBox(height: 8.0), // Espaçamento opcional
+                            const SizedBox(height: 5.0),
                             Text('Data: ${event['datahora'] ?? ''}'),
-                            const SizedBox(height: 8.0), // Espaçamento opcional
+                            const SizedBox(height: 5.0),
                             Text('Local: ${event['local'] ?? ''}'),
                             Text('convidados: ${event['convidados'] ?? ''}'),
                           ],
                         ),
                         trailing: IconButton(
                           icon: const Icon(Icons.delete),
-                          onPressed: () {},
+                          onPressed: () async {
+                            // Chama a função de exclusão
+                            await deleteById(event['id']);
+
+                            // Atualiza a interface após a exclusão
+                            setState(() {});
+                          },
                         ),
                       ),
                     ),
