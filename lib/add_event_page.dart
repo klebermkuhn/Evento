@@ -1,7 +1,7 @@
 import 'package:eventos/dao/eventDao.dart';
 import 'package:eventos/model/eventos.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart'; // Para formatar a data e o horário
+import 'package:intl/intl.dart';
 
 class AddEventPage extends StatefulWidget {
   const AddEventPage({super.key});
@@ -19,7 +19,6 @@ class _AddEventPageState extends State<AddEventPage> {
   DateTime? _selectedDate;
   TimeOfDay? _selectedTime;
 
-  // Método para exibir o date picker
   Future<void> _pickDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
@@ -35,7 +34,6 @@ class _AddEventPageState extends State<AddEventPage> {
     }
   }
 
-  // Método para exibir o time picker
   Future<void> _pickTime(BuildContext context) async {
     final TimeOfDay? picked = await showTimePicker(
       context: context,
@@ -49,7 +47,6 @@ class _AddEventPageState extends State<AddEventPage> {
     }
   }
 
-  // Converte a data e horário selecionados em um DateTime
   DateTime? _getCombinedDateTime() {
     if (_selectedDate != null && _selectedTime != null) {
       return DateTime(
@@ -119,9 +116,6 @@ class _AddEventPageState extends State<AddEventPage> {
               onPressed: () {
                 DateTime? dateTime = _getCombinedDateTime();
                 if (dateTime != null) {
-                  // Aqui você pode adicionar a lógica para salvar o evento com a data e hora combinadas.
-                  // Exemplo: salvar no banco de dados ou na lista de eventos.
-                  // Você pode usar o método de inserção no DAO como `insertEvent(Event(nome: ..., dataHora: dateTime, ...))`
                   insertEvent(Event(
                       nome: _eventNameController.text,
                       dataHora: dateTime,
@@ -129,7 +123,6 @@ class _AddEventPageState extends State<AddEventPage> {
                       convidados: _convidados.text));
                   Navigator.pop(context);
                 } else {
-                  // Exibe uma mensagem de erro se a data ou horário não foram selecionados
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
                       content: Text('Por favor, selecione a data e o horário.'),

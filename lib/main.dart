@@ -42,14 +42,33 @@ class EventManagerApp extends StatelessWidget {
 
 class LoginPage extends StatefulWidget {
   @override
+  // ignore: library_private_types_in_public_api
   _LoginPageState createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  bool _isLoading = false;
+
+  // Função para validar o login
+  void _login() {
+    String username = _usernameController.text;
+    String password = _passwordController.text;
+
+    if (username == 'kleber' && password == '123') {
+      // Redirecionar para a EventPage se o login for válido
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => EventPage()),
+      );
+    } else {
+      // Mostrar mensagem de erro se o login for inválido
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Nome ou senha incorretos')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -60,8 +79,7 @@ class _LoginPageState extends State<LoginPage> {
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 50.0),
         child: Column(
-          mainAxisAlignment:
-              MainAxisAlignment.end, // Alinha o conteúdo na parte inferior
+          mainAxisAlignment: MainAxisAlignment.end,
           children: <Widget>[
             TextField(
               controller: _usernameController,
@@ -72,17 +90,12 @@ class _LoginPageState extends State<LoginPage> {
               decoration: const InputDecoration(labelText: 'Senha'),
               obscureText: true,
             ),
-            const SizedBox(height: 30), // Espaço adicional entre campos e botão
+            const SizedBox(height: 30),
             ElevatedButton(
-              onPressed: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => EventPage()),
-                );
-              },
+              onPressed: _login, // Chama a função de login ao clicar
               child: const Text('Entrar'),
             ),
-            const SizedBox(height: 40), // Espaço entre o botão e o texto
+            const SizedBox(height: 40),
             TextButton(
               onPressed: () {
                 Navigator.push(
@@ -95,8 +108,7 @@ class _LoginPageState extends State<LoginPage> {
                 style: TextStyle(color: Color.fromARGB(255, 71, 10, 10)),
               ),
             ),
-            const SizedBox(
-                height: 60), // Espaço opcional na parte inferior da tela
+            const SizedBox(height: 60),
           ],
         ),
       ),
@@ -143,11 +155,8 @@ class SignUpPage extends StatelessWidget {
               onPressed: () {
                 if (_passwordController.text ==
                     _confirmPasswordController.text) {
-                  // Aqui você pode adicionar a lógica para criar a conta.
-                  // Por exemplo, salvar o usuário em um banco de dados ou serviço.
-                  Navigator.pop(context); // Retorna à página de login
+                  Navigator.pop(context);
                 } else {
-                  // Exibe um erro se as senhas não coincidirem.
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
                       content: Text('Senhas não coincidem'),
@@ -199,9 +208,7 @@ class _EventPageState extends State<EventPage> {
                 child: Text('Houve um erro de conexão com o banco de dados'),
               );
             case ConnectionState.waiting:
-            // fez a requisição e estou esperando a resposta
             case ConnectionState.active:
-              // active mostra que a conexão com o banco foi bem sucedida
               return const Center(
                 child: CircularProgressIndicator(),
               );
@@ -210,41 +217,88 @@ class _EventPageState extends State<EventPage> {
               List<Map> events = snapshot.data as List<Map>;
               return GridView.builder(
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2, // Dois ListTile por linha
-                  crossAxisSpacing: 10.0, // Espaço horizontal entre os itens
-                  mainAxisSpacing: 10.0, // Espaço vertical entre os itens
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 10.0,
+                  mainAxisSpacing: 10.0,
                 ),
                 padding: const EdgeInsets.all(10.0),
                 itemCount: events.length,
                 itemBuilder: (context, index) {
                   final event = events[index];
                   return Card(
+                    elevation: 8,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
                     child: Padding(
-                      padding: const EdgeInsets.all(5.0),
-                      child: ListTile(
-                        title: Text(
-                          event['nome'] ?? '',
-                          style: Theme.of(context).textTheme.headlineMedium,
-                        ),
-                        subtitle: Column(
-                          children: [
-                            const SizedBox(height: 5.0),
-                            Text('Data: ${event['datahora'] ?? ''}'),
-                            const SizedBox(height: 5.0),
-                            Text('Local: ${event['local'] ?? ''}'),
-                            Text('convidados: ${event['convidados'] ?? ''}'),
-                          ],
-                        ),
-                        trailing: IconButton(
-                          icon: const Icon(Icons.delete),
-                          onPressed: () async {
-                            // Chama a função de exclusão
-                            await deleteById(event['id']);
-
-                            // Atualiza a interface após a exclusão
-                            setState(() {});
-                          },
-                        ),
+                      padding: const EdgeInsets.all(12.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            event['nome'] ?? '',
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black87,
+                            ),
+                          ),
+                          const SizedBox(height: 8.0),
+                          Row(
+                            children: [
+                              const Icon(Icons.calendar_today,
+                                  color: Colors.grey),
+                              const SizedBox(width: 5),
+                              Text(
+                                'Data: ${formatDate(event['datahora'])}',
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.black54,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 8.0),
+                          Row(
+                            children: [
+                              const Icon(Icons.location_on, color: Colors.grey),
+                              const SizedBox(width: 5),
+                              Text(
+                                'Local: ${event['local'] ?? ''}',
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.black54,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 8.0),
+                          Row(
+                            children: [
+                              const Icon(Icons.group, color: Colors.grey),
+                              const SizedBox(width: 5),
+                              Text(
+                                'Convidados: ${event['convidados'] ?? ''}',
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.black54,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const Spacer(),
+                          Align(
+                            alignment: Alignment.bottomRight,
+                            child: IconButton(
+                              icon: const Icon(Icons.delete,
+                                  color: Colors.redAccent),
+                              onPressed: () async {
+                                await deleteById(event['id']);
+                                setState(() {});
+                              },
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   );
@@ -268,4 +322,15 @@ class _EventPageState extends State<EventPage> {
       ),
     );
   }
+}
+
+String formatDate(String dateTime) {
+  DateTime parsedDate = DateTime.parse(dateTime);
+
+  String formattedDate =
+      "${parsedDate.day}/${parsedDate.month}/${parsedDate.year}";
+  String formattedTime =
+      "${parsedDate.hour}:${parsedDate.minute.toString().padLeft(2, '0')}";
+
+  return "$formattedDate $formattedTime";
 }

@@ -21,18 +21,3 @@ Future<int> deleteById(int id) async {
   Database db = await getDatabase();
   return db.delete('eventos', where: "id = ?", whereArgs: [id]);
 }
-
-Future<int> updateEvent(Event event) async {
-  Database db = await getDatabase();
-  return db.update(
-    'eventos',
-    event.toMap(),
-    where: "id = ?",
-    whereArgs: [event.id],
-  );
-}
-// Future<int> deleteById(int id) async {
-//   debugPrint("Deletando o ID: $id");
-//   Database db = await getDatabase();
-//   return db.delete('eventos', where: "id = ?", whereArgs: [id]);
-// }
